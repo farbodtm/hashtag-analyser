@@ -28,3 +28,10 @@ node_modules
 
 # Debug log from npm
 npm-debug.log
+
+# Bower Components
+bower_components
+
+# Hashtag-analyser
+keys.js
+data
