@@ -36,3 +36,4 @@ bower_components
 keys.js
 data
 *.swp
+.DS_Store
