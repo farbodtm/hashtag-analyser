@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('gc-project1:server');
+var debug = require('debug')('hashtag:server');
 var http = require('http');
 
 /**

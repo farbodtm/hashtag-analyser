@@ -1,18 +1,21 @@
 var db = require('mongoskin').db('mongodb://root@localhost:27017/hashtag');
 var tweets = db.collection('tweets');
 
+var fs = require('fs');
+
 var hts;
 
 tweets.count(function(err, count) {
   var i = 0, counter = count;
   var hashtags = {}; 
+  var perRequest = 100000;
   while (i < count) {
-    tweets.find({},{entities: 1}).skip(i).limit(1000).toArray(function(err, result) {
+    tweets.find({},{hashtags: 1}).skip(i).limit(perRequest).toArray(function(err, result) {
       console.log(counter);
-      counter -= 1000;
+      counter -= perRequest;
       result.forEach(function(tweet) {
-	tweet.entities.hashtags.forEach(function(hashtag) {
-	  hashtag = hashtag.text.toLowerCase();
+	tweet.hashtags.forEach(function(hashtag) {
+	  hashtag = hashtag.toLowerCase();
 	  hashtags[hashtag] = hashtags[hashtag] || 0;
 	  hashtags[hashtag]++;
 	});
@@ -23,25 +26,27 @@ tweets.count(function(err, count) {
 	process(hashtags);
       }
     });
-    i += 1000;
+    i += perRequest;
   }
 });
 
 function process(hashtags) {
   var sortedHashtags = [];
   for(var hashtag in hashtags) {
-    if (hashtags[hashtag] > 20) {
+    if (hashtags[hashtag] > 1000) {
       var h = {};
       h.text = hashtag;
-      h.number = hashtags[hashtag];
+      h.count = hashtags[hashtag];
       sortedHashtags.push(h);
     }
   }
   sortedHashtags.sort(function(a,b) {
-    return a.number - b.number;
+    return b.count - a.count;
   });
   hts = sortedHashtags;
-  console.log(hts);
+  fs.writeFile('./test.json', JSON.stringify(hts,null,4), function() {
+    console.log(hts);
+  });
 }
 
 
