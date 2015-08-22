@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "miner": "node ./scripts/miner.js",
-    "flusher": "node ./scripts/flusher.js"
+    "analyser": "node ./scripts/analyser.js"
   },
   "dependencies": {
     "body-parser": "~1.13.2",

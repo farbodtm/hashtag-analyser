@@ -1,8 +1,20 @@
 body {
-  padding: 50px;
+  padding: 100px 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.form {
+  margin: 25px auto;
+  width: 250px;
+}
+button {
+  margin: 0 10px;
+}
+.chart {
+  width: 800px;
+  margin: 0 auto;
 }

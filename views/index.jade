@@ -1,11 +1,13 @@
 extends layout
 
 block content
-  br
-  br
-  br
-  canvas(id='chart', width='800', height='400')
-  br
-  br
-  br
-  pre= hashtag
+  .row
+    .form
+      form.form-inline#form-hashtag(action='#')
+        .form-group
+          label(for='hashtag') #
+          input#input-hashtag.form-control(type='text', placeholder='')
+        button.btn.btn-default(type='submit') Plot 
+  .row
+    .chart
+      canvas(id='chart', width='800', height='400')
