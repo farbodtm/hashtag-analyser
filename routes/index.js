@@ -10,7 +10,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/json/:hashtag', function(req, res, next) {
-  var hashtag =  req.params.hashtag;
+  // get the json data of a hashtag from database
+  var hashtag =  req.params.hashtag.toLowerCase();
   db.collection('hashtags').findOne({ text: hashtag }, function(err, result) {
     if (result) {
       res.json(result);

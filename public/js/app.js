@@ -1,27 +1,50 @@
-var ctx = document.getElementById('chart').getContext('2d');
-var data = {
-    labels: ["19/8", "20/8", "21/8", "22/8", "23/8", "24/8", "25/8","26/8", "27/8", "28/8", "29/8"],
+$('#form-hashtag').submit(function(e) {
+  e.preventDefault();
+  var hashtag = $('#input-hashtag').val();
+  $.getJSON('/json/' + hashtag, function(data) {
+    if (data) {
+      var labels = getDates(new Date('19 Aug 2015'), new Date('25 Aug 2015'));
+      chartData.labels = labels;
+      chartData.datasets[0].data = []
+      labels.forEach(function(label) {
+        if (data.temporal[label]) {
+          chartData.datasets[0].data.push(data.temporal[label]);
+        } else {
+          chartData.datasets[0].data.push(0);
+        }
+      });
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      chart = new Chart(ctx).Line(chartData);
+    }
+  });
+  return false;
+});
+
+function getDates(startDate, stopDate) {
+    var dateArray = [];
+    var currentDate = startDate;
+    while (currentDate <= stopDate) {
+        dateArray.push(moment(currentDate).format('D MMM YYYY'))
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+    return dateArray;
+}
+
+var canvas = document.getElementById('chart');
+var ctx = canvas.getContext('2d');
+var chartData = {
+    labels: [],
     datasets: [
         {
-            label: "#hashtag1",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-            data: [10, 22, 50, 100, 233, 340, 500, 300, 220, 100, 10, 0]
-        },
-        {
-            label: "#hashtag2",
+            label: "#",
             fillColor: "rgba(151,187,205,0.2)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [28, 48, 100, 600, 90, 20, 90, 50, 70, 80, 10, 0, 2]
+            data: []
         }
     ]
 };
-var myLineChart = new Chart(ctx).Line(data);
+var chart;

@@ -1,4 +1,5 @@
 var fs = require('fs');
+var moment = require('moment');
 
 var db = require('mongoskin').db('mongodb://root@localhost:27017/hashtag');
 var tweets = db.collection('tweets');
@@ -18,7 +19,7 @@ tweets.count(function(err, count) {
       counter -= perRequest;
       result.forEach(function(tweet) {
 	date = new Date(tweet.created_at);
-	date = date.toDateString();
+	date = moment(date).format('D MMM YYYY');
 	tweet.hashtags.forEach(function(hashtag) {
 	  hashtag = hashtag.toLowerCase();
 	  hashtags[hashtag] = hashtags[hashtag] || {};
