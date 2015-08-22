@@ -13,8 +13,17 @@ $('#form-hashtag').submit(function(e) {
           chartData.datasets[0].data.push(0);
         }
       });
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      chart = new Chart(ctx).Line(chartData);
+      // create a canvas a plot
+      canvas = document.createElement('canvas');
+      canvas.id = 'chart';
+      canvas.width = 1200;
+      canvas.height = 400;
+      document.getElementById('chart-container').innerHTML = '';
+      document.getElementById('chart-container').appendChild(canvas);
+      ctx = canvas.getContext('2d');
+      chart = new Chart(ctx).Line(chartData, {
+        bezierCurve: true
+      });
     }
   });
   return false;
@@ -30,8 +39,8 @@ function getDates(startDate, stopDate) {
     return dateArray;
 }
 
-var canvas = document.getElementById('chart');
-var ctx = canvas.getContext('2d');
+var canvas;
+var ctx;
 var chartData = {
     labels: [],
     datasets: [
