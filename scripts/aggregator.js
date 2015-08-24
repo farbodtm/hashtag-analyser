@@ -16,19 +16,23 @@ tweets.count(function(err, count) {
   var hashtags = {}; 
   var date;
   var perRequest = 100000;
+
   var bar = new progress(chalk.yellow('Counting [:bar] :percent :etas'), {
     complete: '=',
     incomplete: ' ',
     width: 50,
     total: count
   });
+
   while (i < count) {
     tweets.find({},{ hashtags: 1, created_at: 1}).skip(i).limit(perRequest).toArray(function(err, result) {
       counter += perRequest;
       bar.tick(perRequest);
       result.forEach(function(tweet) {
+	// set the date
 	date = new Date(tweet.created_at);
 	date = moment(date).format('D MMM YYYY');
+	// counting each hastag of a tweet
 	tweet.hashtags.forEach(function(hashtag) {
 	  hashtag = hashtag.toLowerCase();
 	  hashtags[hashtag] = hashtags[hashtag] || {};
@@ -46,6 +50,7 @@ tweets.count(function(err, count) {
     });
     i += perRequest;
   }
+
 });
 
 function store(hashtags) {
@@ -78,7 +83,6 @@ function store(hashtags) {
       });
     });
   });
-
 }
 
 

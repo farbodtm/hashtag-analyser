@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "miner": "node ./scripts/miner.js",
-    "analyser": "node ./scripts/analyser.js"
+    "aggregator": "node ./scripts/aggregator.js"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -23,8 +23,5 @@
     "progress": "^1.1.8",
     "serve-favicon": "~2.3.0",
     "twit": "^2.1.0"
-  },
-  "devDependencies": {
-    "gulp-traceur-cmdline": "^1.3.10"
   }
 }
