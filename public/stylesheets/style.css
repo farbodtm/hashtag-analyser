@@ -9,9 +9,9 @@ a {
 
 .form {
   margin: 25px auto;
-  width: 250px;
+  width: 470px;
 }
-button {
+button, .form-group {
   margin: 0 10px;
 }
 .chart {
