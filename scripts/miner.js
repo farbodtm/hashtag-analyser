@@ -21,7 +21,11 @@ stream.on('tweet', function(data) {
   }
 });
 
-stream.on('reconnect', function() {
+stream.on('delete', function(data) {
+});
+
+stream.on('reconnect', function(e) {
+  console.log(e);
   console.log(chalk.yellow('Reconnecting...'));
   helpers.sendMail('I am reconnecting..!!');
 });

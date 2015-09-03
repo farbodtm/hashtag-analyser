@@ -12,13 +12,21 @@ var hts;
 
 var store = function(hashtags) {
   var sortedHashtags = [];
+  // do some cleaning before storing
   for(var hashtag in hashtags) {
-    if (hashtags[hashtag].total > 200) {
+    if (hashtags[hashtag].total > 20) {
       var h = {};
       h.text = hashtag;
       h.temporal = hashtags[hashtag];
       h.total = hashtags[hashtag].total;
       delete hashtags[hashtag].total;
+      // average absolute slope
+      /*var aas = 0;
+      for (var i = 1; i < h.temporal.length; i++) {
+	aas += Math.abs(h.temporal[i] - h.temporal[i-1]);
+      }
+      //aas /= h.temporal.length;
+      h.aas = aas;*/
       sortedHashtags.push(h);
     }
   }
@@ -72,6 +80,7 @@ tweets.count(function(err, count) {
 	  hashtags[hashtag].total++;
 	});
       });
+
       result = null;
       if (i > count) {
 	console.log(chalk.yellow('Saving...'));
