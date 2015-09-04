@@ -21,15 +21,23 @@ var store = function(hashtags) {
       h.total = hashtags[hashtag].total;
       delete hashtags[hashtag].total;
       // average absolute slope
-      /*var aas = 0;
-      for (var i = 1; i < h.temporal.length; i++) {
-	aas += Math.abs(h.temporal[i] - h.temporal[i-1]);
+
+      var temporalArr = [];
+      for (var date in h.temporal) {
+	temporalArr.push(h.temporal[date]);
       }
-      //aas /= h.temporal.length;
-      h.aas = aas;*/
+      var aas = 0;
+      for (var i = 1; i < temporalArr.length-1; i++) {
+	aas += Math.abs(temporalArr[i] - temporalArr[i-1]);
+      }
+      aas /= ((temporalArr.length-1) * h.total);
+      aas *= 100;
+      h.aas = aas;
+
       sortedHashtags.push(h);
     }
   }
+
   sortedHashtags.sort(function(a,b) {
     return b.total - a.total;
   });

@@ -7,9 +7,11 @@ $('#form-hashtag').submit(function(e) {
   var labels = getDates(new Date('19 Aug 2015'), new Date('4 Sep 2015'));
   chartData.labels = labels;
   var count = 0;
+  $('#info').text('');
   hashtags.forEach(function(hashtag, i) {
     chartData.datasets[i].data = []
     $.getJSON('/json/' + hashtag).then(function(data) {
+      $('#info').append(data.text + ' : ' + data.aas + '<br>');
       if (data) {
         labels.forEach(function(label) {
           if (data.temporal[label]) {
