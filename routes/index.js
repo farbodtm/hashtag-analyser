@@ -11,8 +11,16 @@ router.get('/', function(req, res, next) {
 
 // stat json
 router.get('/hashtags', function(req, res, next) {
-  db.collection('hashtags').find().sort({ total: -1 }).limit(100).toArray(function(err, result) {
+  var limit = req.query.limit || 10;
+  var skip = req.query.skip || 0;
+  var censor = ['horny'];
+  db.collection('hashtags').find({ aasOverTotal: {$gt : 0.015}, text: /^[A-Za-z0-9]*$/ }).sort({ total: -1 }).skip(parseInt(skip)).limit(parseInt(limit)).toArray(function(err, result) {
     if (result) {
+      result.forEach(function(el, i, arr) {
+	if (censor.indexOf(el.text) > -1) {
+	  arr.splice(i, 1);
+	}
+      });
       res.json(result);
     } else {
       var err = new Error('Not Found');

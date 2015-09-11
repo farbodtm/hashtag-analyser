@@ -9,8 +9,13 @@ a {
 
 .form {
   margin: 25px auto;
-  width: 470px;
+  width: 500px;
 }
+
+#form-bar {
+  width: 600px;
+}
+
 button, .form-group {
   margin: 0 10px;
 }

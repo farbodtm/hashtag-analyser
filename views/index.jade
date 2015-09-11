@@ -5,6 +5,8 @@ block content
     .form
       form.form-inline#form-hashtag(action='#')
         .form-group
+          input#input-level(type='checkbox')
+        .form-group
           label(for='hashtag-1') #
           input#input-hashtag-1.form-control(type='text', placeholder='')
         .form-group
@@ -14,6 +16,18 @@ block content
   .row
     .chart#chart-container
       canvas(id='chart', width='1200', height='400')
+    
   .row
     .well
       .pre#info
+  .row
+    .form
+      form.form-inline#form-bar(action='#')
+        .form-group
+          label(for='hashtag') Limit
+          input#input-limit.form-control(type='text', placeholder='')
+        .form-group
+          label(for='hashtag') Skip
+          input#input-skip.form-control(type='text', placeholder='')
+        button.btn.btn-default(type='submit') Plot 
+    .chart#barchart-container

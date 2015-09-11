@@ -4,18 +4,33 @@ $('#form-hashtag').submit(function(e) {
   var hashtag2 = $('#input-hashtag-2').val();
   var hashtags = [hashtag1, hashtag2];
 
-  var labels = getDates(new Date('19 Aug 2015'), new Date('4 Sep 2015'));
+  var labels = getDates(new Date('19 Aug 2015'), new Date('8 Sep 2015'));
   chartData.labels = labels;
   var count = 0;
   $('#info').text('');
   hashtags.forEach(function(hashtag, i) {
-    chartData.datasets[i].data = []
+    chartData.datasets[i].data = [];
     $.getJSON('/json/' + hashtag).then(function(data) {
-      $('#info').append(data.text + ' : ' + data.aas + '<br>');
+      $('#info').append(data.text + '<br>');
+      $('#info').append(data.total + '<br>');
+      if (data.aasOverTotal*100 < 1.5) {
+        $('#info').append($('<span style="color: #d9534f;">roughness: ' + data.aasOverTotal*100 + '</span>'));
+      } else {
+        $('#info').append($('<span style="color: #5cb85c;">roughness: ' + data.aasOverTotal*100 + '</span>'));
+      }
+      $('#info').append('<br>');
+      $('#info').append('peaks: ' + data.peaks + '<br>');
+      $('#info').append('mean: ' + data.mean + '<br>');
+      $('#info').append('variance: ' + data.varianceOverTotal + '<br>');
+      $('#info').append('<br>');
       if (data) {
         labels.forEach(function(label) {
           if (data.temporal[label]) {
-            chartData.datasets[i].data.push(data.temporal[label]);
+            if ($('#input-level').prop('checked')) {
+              chartData.datasets[i].data.push(data.temporal[label] * (1000/data.total));
+            } else {
+              chartData.datasets[i].data.push(data.temporal[label]);
+            }
           } else {
             chartData.datasets[i].data.push(0);
           }
@@ -46,7 +61,8 @@ function plot(cData) {
   document.getElementById('chart-container').appendChild(canvas);
   ctx = canvas.getContext('2d');
   chart = new Chart(ctx).Line(cData, {
-    bezierCurve: true
+    bezierCurve: true,
+    scaleBeginAtZero : true
   });
 }
 
@@ -54,7 +70,7 @@ function getDates(startDate, stopDate) {
     var dateArray = [];
     var currentDate = startDate;
     while (currentDate <= stopDate) {
-        dateArray.push(moment(currentDate).format('D MMM YYYY'))
+        dateArray.push(moment(currentDate).format('D MMM YYYY'));
         currentDate = moment(currentDate).add(1, 'days');
     }
     return dateArray;
@@ -67,9 +83,10 @@ var chartData = {
   datasets: [
     {
       label: "#",
-      fillColor: "rgba(151,187,205,0.2)",
-      strokeColor: "rgba(151,187,205,1)",
-      pointColor: "rgba(151,187,205,1)",
+      fillColor: "rgba(66,139,202,0.2)",
+      strokeColor: "rgba(66,139,202,1)",
+      pointColor: "rgba(66,139,202,1)",
+
       pointStrokeColor: "#fff",
       pointHighlightFill: "#fff",
       pointHighlightStroke: "rgba(151,187,205,1)",
@@ -77,15 +94,68 @@ var chartData = {
     },
     {
       label: "#",
-      fillColor: "rgba(220,220,220,0.2)",
-      strokeColor: "rgba(220,220,220,1)",
-      pointColor: "rgba(220,220,220,1)",
+      fillColor: "rgba(217,83,79,0.2)",
+      strokeColor: "rgba(217,83,79,1)",
+      pointColor: "rgba(217,83,79,1)",
       pointStrokeColor: "#fff",
       pointHighlightFill: "#fff",
       pointHighlightStroke: "rgba(220,220,220,1)",
       data: []
     }
-
   ]
 };
 var chart;
+
+$('#form-bar').submit(function(e) {
+  e.preventDefault();
+  var limit = $('#input-limit').val();
+  var skip = $('#input-skip').val();
+  $.getJSON('/hashtags/', {limit :limit, skip: skip}).then(function(data) {
+    if (data) {
+      barChart.datasets[0].data = [];
+      barChart.labels = [];
+      data.forEach(function(hashtag) {
+        barChart.datasets[0].data.push(hashtag.total);
+        barChart.labels.push(hashtag.text);
+      });
+      canvas2 = document.createElement('canvas');
+      canvas2.id = 'barchart';
+      canvas2.width = 1200;
+      canvas2.height = 400;
+      document.getElementById('barchart-container').innerHTML = '';
+      document.getElementById('barchart-container').appendChild(canvas2);
+      ctx = canvas2.getContext('2d');
+      chart = new Chart(ctx).Bar(barChart, {
+        scaleBeginAtZero : true,
+        scaleShowGridLines : true,
+        scaleGridLineColor : "rgba(0,0,0,.05)",
+        scaleGridLineWidth : 1,
+        scaleShowHorizontalLines: true,
+        scaleShowVerticalLines: true,
+        barShowStroke : true,
+        barStrokeWidth : 2,
+        barValueSpacing : 5,
+        barDatasetSpacing : 1,
+      });
+    }
+  });
+  return false;
+});
+var canvas2;
+var ctx2;
+var barChart = {
+  labels: [],
+  datasets: [
+    {
+      label: "#",
+      fillColor: "rgba(151,187,205,0.2)",
+      strokeColor: "rgba(151,187,205,1)",
+      pointColor: "rgba(151,187,205,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(151,187,205,1)",
+      data: []
+    }
+  ]
+};
+var bar;

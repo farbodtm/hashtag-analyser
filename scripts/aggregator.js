@@ -7,10 +7,27 @@ var db = require('mongoskin').db('mongodb://root@localhost:27017/hashtag');
 var tweets = db.collection('tweets');
 var ht = db.collection('hashtags');
 
+var start = new Date('19 Aug 2015'),
+    end = new Date('8 Sep 2015');
 
 var hts;
 
-var store = function(hashtags) {
+// get a temporal object initialized with 'startDate' to 'stopDate' keys
+function getTemporalObj(startDate, stopDate) {
+    var dateArray = [];
+    var currentDate = startDate;
+    while (currentDate <= stopDate) {
+        dateArray.push(moment(currentDate).format('D MMM YYYY'));
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+    var temporalObj = {};
+    dateArray.forEach(function(day) {
+      temporalObj[day] = 0;
+    });
+    return temporalObj;
+}
+
+var finish = function(hashtags) {
   var sortedHashtags = [];
   // do some cleaning before storing
   for(var hashtag in hashtags) {
@@ -21,18 +38,48 @@ var store = function(hashtags) {
       h.total = hashtags[hashtag].total;
       delete hashtags[hashtag].total;
       // average absolute slope
-
+      // peaks
       var temporalArr = [];
+      var temporalArrFull = [];
+      var temporalObj = getTemporalObj(start, end);
       for (var date in h.temporal) {
 	temporalArr.push(h.temporal[date]);
       }
-      var aas = 0;
-      for (var i = 1; i < temporalArr.length-1; i++) {
-	aas += Math.abs(temporalArr[i] - temporalArr[i-1]);
+      for (date in temporalObj) {
+	if (h.temporal[date]) {
+	  temporalArrFull.push(h.temporal[date]);
+	} else {
+	  temporalArrFull.push(0);
+	}
       }
-      aas /= ((temporalArr.length-1) * h.total);
-      aas *= 100;
+      var aas = 0;
+      var peaks = 0;
+      var mean = 0;
+      var variance = 0;
+      for (var i = 0; i < temporalArrFull.length; i++) {
+	mean += temporalArrFull[i];
+      }
+      mean /= temporalArrFull.length;
+      for (i = 0; i < temporalArrFull.length; i++) {
+	variance = Math.pow(temporalArrFull[i] - mean, 2);
+      }
+      variance /= temporalArrFull.length-1;
+      for (i = 1; i < temporalArr.length-1; i++) {
+	aas += Math.abs(temporalArr[i] - temporalArr[i-1]);
+	if (temporalArr[i] - temporalArr[i-1] > 0 && temporalArr[i] - temporalArr[i+1] > 0) {
+	  peaks++;
+	}
+      }
+      aas /= temporalArr.length-1;
+      
       h.aas = aas;
+      h.aasOverTotal = h.aas/h.total;
+
+      h.peaks = peaks;
+
+      h.mean = mean;
+      h.variance = variance;
+      h.varianceOverTotal = h.variance/h.total;
 
       sortedHashtags.push(h);
     }
@@ -49,14 +96,14 @@ var store = function(hashtags) {
     hts.forEach(function(hashtag) {
       ht.insert(hashtag, function(err, result) {
 	counter--;
-	if (counter == 0) {
+	if (counter === 0) {
 	  console.log(chalk.green('Done'));
 	  process.exit(0);
 	}
       });
     });
   });
-}
+};
 
 tweets.count(function(err, count) {
   console.log(chalk.yellow('Loading...'));
@@ -71,7 +118,7 @@ tweets.count(function(err, count) {
     total: count
   });
 
-  var process = function(i) {
+  var countIt = function(i) {
     tweets.find({},{ hashtags: 1, created_at: 1}).skip(i).limit(perRequest).toArray(function(err, result) {
       bar.tick(perRequest);
       result.forEach(function(tweet) {
@@ -92,15 +139,12 @@ tweets.count(function(err, count) {
       result = null;
       if (i > count) {
 	console.log(chalk.yellow('Saving...'));
-	store(hashtags);
+	finish(hashtags);
       } else {
-	process(i + perRequest);
+	countIt(i + perRequest);
       }
     });
-  }
-  process(0);
+  };
+  countIt(0);
 
 });
-
-
-
