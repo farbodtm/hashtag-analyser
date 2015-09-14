@@ -2,7 +2,9 @@ $('#form-hashtag').submit(function(e) {
   e.preventDefault();
   var hashtag1 = $('#input-hashtag-1').val();
   var hashtag2 = $('#input-hashtag-2').val();
-  var hashtags = [hashtag1, hashtag2];
+  var hashtag3 = $('#input-hashtag-3').val();
+  var hashtag4 = $('#input-hashtag-4').val();
+  var hashtags = [hashtag1, hashtag2, hashtag3, hashtag4];
 
   var labels = getDates(new Date('19 Aug 2015'), new Date('8 Sep 2015'));
   chartData.labels = labels;
@@ -97,6 +99,26 @@ var chartData = {
       fillColor: "rgba(217,83,79,0.2)",
       strokeColor: "rgba(217,83,79,1)",
       pointColor: "rgba(217,83,79,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(220,220,220,1)",
+      data: []
+    },
+    {
+      label: "#",
+      fillColor: "rgba(240,173,78,0.2)",
+      strokeColor: "rgba(240,173,78,1)",
+      pointColor: "rgba(240,173,78,1)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(220,220,220,1)",
+      data: []
+    },
+    {
+      label: "#",
+      fillColor: "rgba(92,184,92,0.2)",
+      strokeColor: "rgba(92,184,92,1)",
+      pointColor: "rgba(92,184,92,1)",
       pointStrokeColor: "#fff",
       pointHighlightFill: "#fff",
       pointHighlightStroke: "rgba(220,220,220,1)",

@@ -9,9 +9,26 @@ a {
 
 .form {
   margin: 25px auto;
-  width: 500px;
+  width: 1100px;
 }
+#input-hashtag-4 {
+  color: #5cb85c;
+  width: 200px;
+}
+#input-hashtag-3 {
+  color: #f0ad4e;
 
+  width: 200px;
+}
+#input-hashtag-2 {
+  color: #d9534f;
+
+  width: 200px;
+}
+#input-hashtag-1 {
+  color: #428bca;
+  width: 200px;
+}
 #form-bar {
   width: 600px;
 }
