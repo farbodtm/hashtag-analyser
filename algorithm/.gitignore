@@ -1,6 +1,0 @@
-build
-.gradle
-
-.gradletasknamecache
-
-!gradle-wrapper.jar

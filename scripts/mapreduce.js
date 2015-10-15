@@ -41,6 +41,7 @@ var finalize = function(key, value) {
   var hashtag = {};
   hashtag.temporal = value;
   hashtag.text = key;
+  hashtag.total = total;
 
   return hashtag;
 };
