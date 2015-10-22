@@ -1,5 +1,6 @@
 var fs = require('fs');
 var moment = require('moment');
+require('moment-range');
 var progress = require('progress');
 var chalk = require('chalk');
 
@@ -12,7 +13,7 @@ var hts;
 var map = function() {
 	// set the date
 	var date = new Date(this.created_at);
-  date = date.toDateString();
+  date = date.getHours() + ' ' + date.getDate() + ' ' + (date.getMonth()+1) + ' ' + date.getFullYear();
 
 	// counting each hastag of a tweet
 	this.hashtags.forEach(function(hashtag) {
@@ -37,16 +38,72 @@ var reduce = function(h, values) {
 
 var finalize = function(key, value) {
   var total = value.total;
+
+  // FILTER
+  if (total < 200) {
+    return false;
+  }
+
   delete value.total;
   var hashtag = {};
   hashtag.temporal = value;
   hashtag.text = key;
   hashtag.total = total;
 
+  var aas = 0;
+  var temporalArr = [];
+  for (var date in hashtag.temporal) {
+    temporalArr.push(hashtag.temporal[date]);
+  }
+  for (i = 1; i < temporalArr.length-1; i++) {
+    aas += Math.abs(temporalArr[i] - temporalArr[i-1]);
+  }
+  aas /= temporalArr.length-1;
+  aas /= total;
+  aas *= 100;
+  /*if (aas < 1.5) {
+    return false;
+  }*/
+  hashtag.aas = aas;
+
+  var fullTemporalArr = [];
+
+  hours.forEach(function(hour) {
+    hashtag.temporal[hour] = hashtag.temporal[hour] || 0;
+    fullTemporalArr.push(hashtag.temporal[hour]);
+  });
+  hashtag.fullTemporalArr = fullTemporalArr;
+
+  var maxIndex = 0;
+  for (var i = 0; i < fullTemporalArr.length; i++) {
+    if (fullTemporalArr[maxIndex] < fullTemporalArr[i]) {
+      maxIndex = i;
+    }
+  }
+  hashtag.maxIndex = maxIndex;
+
+  if (maxIndex < 42 || maxIndex > fullTemporalArr.length-85) {
+    return false;
+  }
+
+  var newArray = [];
+  for (var i = maxIndex - 42; i <= maxIndex + 85; i++) {
+    newArray.push(fullTemporalArr[i]);
+  }
+
+  hashtag.temporalArr = newArray;
+
   return hashtag;
 };
 
-tweets.mapReduce(map.toString(), reduce.toString(), { out: 'hashtags', finalize: finalize.toString() }, function(err, log) {
+var range = moment.range(new Date('00:00 19 Aug 2015'), new Date('00:00 9 Sep 2015'));
+var hours = [];
+
+range.by('hours', function(moment) {
+  hours.push(moment.format('H D M YYYY'));
+});
+
+tweets.mapReduce(map.toString(), reduce.toString(), { out: 'hashtags', finalize: finalize.toString(), scope: { hours: hours } }, function(err, log) {
   if (err) {
     console.log(err);
   } else {
