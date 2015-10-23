@@ -44,4 +44,27 @@ public class Database {
         mongo.close();
         return hashtags;
     }
+    public boolean saveHashtags(List<Hashtag> hashtags, List<Hashtag> clusters) {
+        MongoClient mongo = new MongoClient("localhost", 27017);
+        DB db = mongo.getDB("hashtag");
+        DBCollection hashtagCollection = db.getCollection("hashtags_clustered");
+        hashtagCollection.remove(new BasicDBObject());
+        for (Hashtag hashtag : hashtags) {
+            BasicDBObject doc = new BasicDBObject("text", hashtag.text)
+                    .append("cluster", hashtag.cluster)
+                    .append("temporal", hashtag.temporal);
+            hashtagCollection.insert(doc);
+        }
+
+        DBCollection clusterCollection = db.getCollection("clusters");
+        clusterCollection.remove(new BasicDBObject());
+        for (int i = 0; i < clusters.size(); i++) {
+            BasicDBObject doc = new BasicDBObject("index", i)
+                    .append("temporal", clusters.get(i).temporal);
+            clusterCollection.insert(doc);
+        }
+
+        mongo.close();
+        return true;
+    }
 }

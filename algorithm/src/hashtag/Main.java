@@ -10,11 +10,15 @@ public class Main {
     public static void main(String[] args) {
         Database db = new Database();
         List<Hashtag> hashtags = db.getHashtags(200);
-        System.out.println(hashtags);
-        KSCClustering clustering = new KSCClustering(hashtags);
-        clustering.run(6);
+
         System.out.println(hashtags);
 
-        //double distance = clustering.distance(temporal.get(0), temporal.get(1));
+        KSCClustering clustering = new KSCClustering(hashtags);
+        clustering.run(6);
+
+        System.out.println(hashtags);
+
+        db.saveHashtags(clustering.hashtags, clustering.centroids);
+
     }
 }
