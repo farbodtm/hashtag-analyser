@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="org.mongodb:mongo-java-driver:3.0.3" type="repository">
+  <library name="org.apache" type="repository">
     <properties maven-id="org.mongodb:mongo-java-driver:3.0.3" />
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/mongo-java-driver-3.0.3.jar!/" />
