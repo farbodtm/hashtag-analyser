@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         Database db = new Database();
-        //Map<String, List<Double>> hashtags = db.getHashtags(0);
-        //List< List<Double> > temporal = new  ArrayList< List<Double> >(hashtags.values());
-
-        KSCClustering clustering = new KSCClustering();
-        clustering.computeCentral(2);
+        List<Hashtag> hashtags = db.getHashtags(200);
+        System.out.println(hashtags);
+        KSCClustering clustering = new KSCClustering(hashtags);
+        clustering.run(6);
+        System.out.println(hashtags);
 
         //double distance = clustering.distance(temporal.get(0), temporal.get(1));
     }

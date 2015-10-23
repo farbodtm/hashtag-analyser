@@ -8,6 +8,10 @@ public class Hashtag {
 
     public int cluster;
 
+    public String toString() {
+        return text + " belongs to " + String.valueOf(cluster);
+    }
+
     public Hashtag() {
         cluster = -1;
     }

@@ -1,8 +1,8 @@
 package hashtag;
 
 import org.apache.commons.math3.linear.*;
-
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class KSCClustering {
     public List<Hashtag> hashtags;
@@ -12,32 +12,70 @@ public class KSCClustering {
         hashtags = new ArrayList<>(hts);
     }
 
-    void run(int numCluster) {
-        
+
+    public void run(int numCluster) {
+        createClusters(numCluster);
+        // assign each hashtag to a random cluster
+        for (Hashtag hashtag : hashtags) {
+            hashtag.cluster = ThreadLocalRandom.current().nextInt(0, numCluster);
+        }
+        List<Integer> mem = new ArrayList<>();
+        for (Hashtag hashtag : hashtags) {
+            mem.add(hashtag.cluster);
+        }
+
+        for(int i = 0; i < 200; i++) {
+            // Refinement
+            for (int j = 0; j < centroids.size(); j++) {
+                computeCentral(j);
+            }
+            // Assignment
+            for (Hashtag hashtag : hashtags) {
+                int minCluster = 0;
+                double minDist = computeDistance(centroids.get(0), hashtag).value;
+                for (int j = 1; j < centroids.size(); j++) {
+                    Hashtag cluster = centroids.get(j);
+                    Distance dist = computeDistance(cluster, hashtag);
+                    if (dist.value < minDist) {
+                        minDist = dist.value;
+                        minCluster = j;
+                    }
+                }
+                hashtag.cluster = minCluster;
+            }
+
+            List<Integer> new_mem = new ArrayList<>();
+            for (Hashtag hashtag : hashtags) {
+                new_mem.add(hashtag.cluster);
+            }
+            if (mem.equals(new_mem)) {
+                System.out.println(i);
+                break;
+            }
+        }
     }
 
-    void computeCentral(int k) {
-        Hashtag currectCenter = centroids.get(k);
+    public void computeCentral(int k) {
+        Hashtag currentCenter = centroids.get(k);
         List<List<Double>> cluster = new ArrayList<>();
 
         for (int i = 0; i < hashtags.size(); i++) {
             Hashtag hashtag = hashtags.get(i);
             if (hashtag.cluster == k) {
-                if (sum(currectCenter.temporal) == 0) {
+                if (sum(currentCenter.temporal) == 0) {
                     cluster.add(hashtag.temporal);
                 } else {
-                    Distance distance = computeDistance(currectCenter, hashtag);
+                    Distance distance = computeDistance(currentCenter, hashtag);
                     cluster.add(distance.shiftedTemporal);
                 }
             }
         }
+
         if (cluster.size() == 0) {
-            List<Double> zeros = new ArrayList<Double>(Collections.nCopies(hashtags.get(0).temporal.size(), 0d));
-            currectCenter.temporal = zeros;
-            centroids.set(k, currectCenter);
+            currentCenter.temporal = new ArrayList<Double>(Collections.nCopies(hashtags.get(0).temporal.size(), 0d));
+            centroids.set(k, currentCenter);
         }
 
-        System.out.println(cluster);
         // calculate x/norm(x)
         for (int i = 0; i < cluster.size(); i++) {
             List<Double> a = cluster.get(i);
@@ -75,10 +113,22 @@ public class KSCClustering {
         for (int i = 0; i < temporalLength; i++) {
             newCentroidList.add(centroid[i]);
         }
-        currectCenter.temporal = newCentroidList;
+        currentCenter.temporal = newCentroidList;
+        centroids.set(k, currentCenter);
     }
 
-    double sum(List<Double> arr) {
+    private void createClusters(int n) {
+        List<Hashtag> arr = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            List<Double> zeros = new ArrayList<Double>(Collections.nCopies(hashtags.get(0).temporal.size(), 0d));
+            Hashtag cluster = new Hashtag();
+            cluster.temporal = zeros;
+            arr.add(cluster);
+        }
+        centroids = arr;
+    }
+
+    private double sum(List<Double> arr) {
         double re = 0d;
         for (double i : arr) {
             re += i;
@@ -86,7 +136,7 @@ public class KSCClustering {
         return re;
     }
 
-    Distance computeDistance(Hashtag a, Hashtag b) {
+    private Distance computeDistance(Hashtag a, Hashtag b) {
         List<Double> x = a.temporal;
         List<Double> y = b.temporal;
         double minDistance = getDistance(listToArray(x), listToArray(y));
@@ -122,21 +172,19 @@ public class KSCClustering {
         return distance;
     }
 
-    double getDistance(double[] x, double[] y) {
+    private double getDistance(double[] x, double[] y) {
         RealVector vectorX = new ArrayRealVector(x);
         RealVector vectorY = new ArrayRealVector(y);
 
         double alpha = vectorX.dotProduct(vectorY) / vectorY.dotProduct(vectorY);
-        double distance = vectorX.subtract(vectorY.mapMultiply(alpha)).getNorm() / vectorX.getNorm();
 
-        return distance;
+        return vectorX.subtract(vectorY.mapMultiply(alpha)).getNorm() / vectorX.getNorm();
     }
 
-    double[] listToArray(List<Double> doubles) {
+    private double[] listToArray(List<Double> doubles) {
         double[] target = new double[doubles.size()];
         for (int i = 0; i < target.length; i++) {
-            target[i] = doubles.get(i).doubleValue();  // java 1.4 style
-            target[i] = doubles.get(i);                // java 1.5+ style (outboxing)
+            target[i] = doubles.get(i);
         }
         return target;
     }
