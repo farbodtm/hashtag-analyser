@@ -19,6 +19,5 @@ public class Main {
         System.out.println(hashtags);
 
         db.saveHashtags(clustering.hashtags, clustering.centroids);
-
     }
 }

@@ -25,8 +25,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/hashtag/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5769231">
-              <caret line="20" column="66" selection-start-line="20" selection-start-column="66" selection-end-line="20" selection-end-column="66" />
+            <state vertical-scroll-proportion="0.6057692">
+              <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -108,8 +108,8 @@
         <option value="$PROJECT_DIR$/src/hashtag/Distance.java" />
         <option value="$PROJECT_DIR$/src/hashtag/Hashtag.java" />
         <option value="$PROJECT_DIR$/src/hashtag/KSCClustering.java" />
-        <option value="$PROJECT_DIR$/src/hashtag/Main.java" />
         <option value="$PROJECT_DIR$/src/hashtag/Database.java" />
+        <option value="$PROJECT_DIR$/src/hashtag/Main.java" />
       </list>
     </option>
   </component>
@@ -565,8 +565,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/hashtag/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5769231">
-          <caret line="20" column="66" selection-start-line="20" selection-start-column="66" selection-end-line="20" selection-end-column="66" />
+        <state vertical-scroll-proportion="0.6057692">
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
