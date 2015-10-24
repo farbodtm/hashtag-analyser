@@ -57,13 +57,13 @@
       <file leaf-file-name="KSCClustering.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/hashtag/KSCClustering.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.0981307">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+            <state vertical-scroll-proportion="-2.5584111">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#273#274#0" expanded="true" />
                 <element signature="e#320#321#0" expanded="true" />
-                <element signature="e#4448#4456#0" expanded="true" />
+                <element signature="e#4449#4457#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -112,9 +112,9 @@
         <option value="$PROJECT_DIR$/src/hashtag/Cluster.java" />
         <option value="$PROJECT_DIR$/src/hashtag/Distance.java" />
         <option value="$PROJECT_DIR$/src/hashtag/Hashtag.java" />
-        <option value="$PROJECT_DIR$/src/hashtag/KSCClustering.java" />
         <option value="$PROJECT_DIR$/src/hashtag/Main.java" />
         <option value="$PROJECT_DIR$/src/hashtag/Database.java" />
+        <option value="$PROJECT_DIR$/src/hashtag/KSCClustering.java" />
       </list>
     </option>
   </component>
@@ -459,7 +459,7 @@
             <element signature="imports" expanded="true" />
             <element signature="e#273#274#0" expanded="true" />
             <element signature="e#320#321#0" expanded="true" />
-            <element signature="e#4448#4456#0" expanded="true" />
+            <element signature="e#4449#4457#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -492,7 +492,7 @@
             <element signature="imports" expanded="true" />
             <element signature="e#273#274#0" expanded="true" />
             <element signature="e#320#321#0" expanded="true" />
-            <element signature="e#4448#4456#0" expanded="true" />
+            <element signature="e#4449#4457#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -567,13 +567,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/hashtag/KSCClustering.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.0981307">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+        <state vertical-scroll-proportion="-2.5584111">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#273#274#0" expanded="true" />
             <element signature="e#320#321#0" expanded="true" />
-            <element signature="e#4448#4456#0" expanded="true" />
+            <element signature="e#4449#4457#0" expanded="true" />
           </folding>
         </state>
       </provider>

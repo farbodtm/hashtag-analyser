@@ -12,7 +12,6 @@ public class KSCClustering {
         hashtags = new ArrayList<>(hts);
     }
 
-
     public void run(int numCluster, int numIteration) {
         createClusters(numCluster);
         // assign each hashtag to a random cluster
@@ -102,6 +101,7 @@ public class KSCClustering {
 
         EigenDecomposition eig = new EigenDecomposition(M);
         RealVector newCentroid = eig.getEigenvector(0);
+
         double[] c = newCentroid.toArray();
         double sum = 0;
         for(double i : c) {
@@ -110,6 +110,7 @@ public class KSCClustering {
         if (sum < 0) {
             newCentroid = newCentroid.mapMultiply(-1);
         }
+
         double[] centroid = newCentroid.toArray();
         List<Double> newCentroidList = new ArrayList<>();
         for (int i = 0; i < temporalLength; i++) {
