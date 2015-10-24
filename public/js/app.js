@@ -1,3 +1,4 @@
+var page;
 $('#form-hashtag').submit(function(e) {
   e.preventDefault();
   var hashtag1 = $('#input-hashtag-1').val();

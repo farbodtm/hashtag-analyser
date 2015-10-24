@@ -82,7 +82,7 @@ var finalize = function(key, value) {
   }
   hashtag.maxIndex = maxIndex;
 
-  if (maxIndex < 42 || maxIndex > fullTemporalArr.length-85) {
+  if (maxIndex < 42 || maxIndex > fullTemporalArr.length-86) {
     return false;
   }
 

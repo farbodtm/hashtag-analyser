@@ -13,7 +13,7 @@ public class KSCClustering {
     }
 
 
-    public void run(int numCluster) {
+    public void run(int numCluster, int numIteration) {
         createClusters(numCluster);
         // assign each hashtag to a random cluster
         for (Hashtag hashtag : hashtags) {
@@ -24,7 +24,9 @@ public class KSCClustering {
             mem.add(hashtag.cluster);
         }
 
-        for(int i = 0; i < 200; i++) {
+        for(int i = 0; i < numIteration; i++) {
+            System.out.print("Iteration: ");
+            System.out.println(i);
             // Refinement
             for (int j = 0; j < centroids.size(); j++) {
                 computeCentral(j);

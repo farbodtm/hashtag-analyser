@@ -28,10 +28,12 @@ html(lang='en')
           a.navbar-brand(href='#') Hashtag 
         #navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
-            li.active
-              a(href='#') Main
+            li
+              a(href='/') Project 1 
+            li
+              a(href='/cluster') Project 2 
         // /.nav-collapse
-    .container
+    .container.main
       block content
       
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
@@ -39,3 +41,5 @@ html(lang='en')
     script(src='/chartjs/Chart.js')
     script(src='/moment/min/moment.min.js')
     script(src='/js/app.js')
+    script(src='/js/cluster.js')
+    

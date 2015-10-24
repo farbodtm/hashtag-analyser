@@ -5,7 +5,7 @@ var chalk = require('chalk');
 
 var db = require('mongoskin').db('mongodb://root@localhost:27017/hashtag');
 var tweets = db.collection('tweets');
-var ht = db.collection('hashtags');
+var ht = db.collection('hashtags_daily');
 
 var start = new Date('19 Aug 2015'),
     end = new Date('8 Sep 2015');

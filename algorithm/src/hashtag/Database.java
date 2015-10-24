@@ -44,10 +44,10 @@ public class Database {
         mongo.close();
         return hashtags;
     }
-    public boolean saveHashtags(List<Hashtag> hashtags, List<Hashtag> clusters) {
+    public boolean saveHashtags(List<Hashtag> hashtags, List<Hashtag> clusters, String numHashtags, String numClusters) {
         MongoClient mongo = new MongoClient("localhost", 27017);
         DB db = mongo.getDB("hashtag");
-        DBCollection hashtagCollection = db.getCollection("hashtags_clustered");
+        DBCollection hashtagCollection = db.getCollection("hashtags_clustered_" + numHashtags + "_" + numClusters);
         hashtagCollection.remove(new BasicDBObject());
         for (Hashtag hashtag : hashtags) {
             BasicDBObject doc = new BasicDBObject("text", hashtag.text)
@@ -56,7 +56,7 @@ public class Database {
             hashtagCollection.insert(doc);
         }
 
-        DBCollection clusterCollection = db.getCollection("clusters");
+        DBCollection clusterCollection = db.getCollection("clusters_" + numHashtags + "_" + numClusters);
         clusterCollection.remove(new BasicDBObject());
         for (int i = 0; i < clusters.size(); i++) {
             BasicDBObject doc = new BasicDBObject("index", i)
