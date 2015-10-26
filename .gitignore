@@ -38,3 +38,4 @@ data
 *.swp
 .DS_Store
 data.tar.gz
+newdata
