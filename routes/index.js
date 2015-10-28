@@ -69,10 +69,19 @@ router.get('/cluster/json/:collection/:hashtags/:clusters', function(req, res, n
 // json for each hashtag
 router.get('/json/:hashtag', function(req, res, next) {
   // get the json data of a hashtag from database
-  var hashtag =  req.params.hashtag.toLowerCase();
-  db.collection('hashtags_daily').findOne({ text: hashtag }, function(err, result) {
+  var hashtag = req.params.hashtag.toLowerCase();
+  db.collection('hashtags_original_clustered_0_6').findOne({ 'text': hashtag }, function(err, result) {
     if (result) {
-      res.json(result);
+      db.collection('hashtags_original').findOne({ 'value.text': hashtag }, function(err, resulting) {
+        if (resulting) {
+          resulting.cluster = result;
+          res.json(resulting);
+        } else {
+          var err = new Error('Not Found');
+          err.status = 404;
+          next(err);
+        }
+      });
     } else {
       var err = new Error('Not Found');
       err.status = 404;

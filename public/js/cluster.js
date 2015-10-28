@@ -42,6 +42,8 @@ if (page =='cluster') {
         }
       }
     }
+
+    text += '<br><br>';
     words.html(text);
     $('.main').append(words);
     ctx = canvas.getContext('2d');
@@ -63,7 +65,6 @@ if (page =='cluster') {
         fillColor: "rgba(66,139,202,0.2)",
         strokeColor: "rgba(66,139,202,1)",
         pointColor: "rgba(66,139,202,1)",
-
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(151,187,205,1)",

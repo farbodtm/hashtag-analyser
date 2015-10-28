@@ -5,7 +5,10 @@ block content
     .form
       form.form-inline#form-hashtag(action='#')
         .form-group
+          | Full 
           input#input-level(type='checkbox')
+          | Scale
+          input#input-norm(type='checkbox')
         .form-group
           label(for='hashtag-1') #
           input#input-hashtag-1.form-control(type='text', placeholder='')
@@ -26,14 +29,3 @@ block content
   .row
     .well
       .pre#info
-  .row
-    .form
-      form.form-inline#form-bar(action='#')
-        .form-group
-          label(for='hashtag') Limit
-          input#input-limit.form-control(type='text', placeholder='')
-        .form-group
-          label(for='hashtag') Skip
-          input#input-skip.form-control(type='text', placeholder='')
-        button.btn.btn-default(type='submit') Plot 
-    .chart#barchart-container

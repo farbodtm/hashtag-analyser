@@ -7,37 +7,41 @@ $('#form-hashtag').submit(function(e) {
   var hashtag4 = $('#input-hashtag-4').val();
   var hashtags = [hashtag1, hashtag2, hashtag3, hashtag4];
 
-  var labels = getDates(new Date('19 Aug 2015'), new Date('8 Sep 2015'));
+  var labels = [];
   chartData.labels = labels;
   var count = 0;
   $('#info').text('');
+  console.log(hashtags);
+
   hashtags.forEach(function(hashtag, i) {
     chartData.datasets[i].data = [];
     $.getJSON('/json/' + hashtag).then(function(data) {
-      $('#info').append(data.text + '<br>');
-      $('#info').append(data.total + '<br>');
-      if (data.aasOverTotal*100 < 1.5) {
-        $('#info').append($('<span style="color: #d9534f;">roughness: ' + data.aasOverTotal*100 + '</span>'));
-      } else {
-        $('#info').append($('<span style="color: #5cb85c;">roughness: ' + data.aasOverTotal*100 + '</span>'));
-      }
-      $('#info').append('<br>');
-      $('#info').append('peaks: ' + data.peaks + '<br>');
-      $('#info').append('mean: ' + data.mean + '<br>');
-      $('#info').append('variance: ' + data.varianceOverTotal + '<br>');
-      $('#info').append('<br>');
+      console.log(data);
+      $('#info').append('Hashtag ' + parseInt(i+1) + ': '+ data.value.text + '<br>');
+      $('#info').append('Total: '+ data.value.total + '<br>');
+      $('#info').append('Cluster: ' + parseInt(data.cluster.cluster+1) + '<br>');
+      $('#info').append('Max Index: ' + data.value.maxIndex+ '<br><br>');
+
       if (data) {
-        labels.forEach(function(label) {
-          if (data.temporal[label]) {
-            if ($('#input-level').prop('checked')) {
-              chartData.datasets[i].data.push(data.temporal[label] * (1000/data.total));
-            } else {
-              chartData.datasets[i].data.push(data.temporal[label]);
+        if ($('#input-level').prop('checked')) {
+          chartData.datasets[i].data = data.value.fullTemporalArr;
+          if (!chartData.labels.length) {
+            for (var j = 1; j <= data.value.fullTemporalArr.length; j++) {
+              chartData.labels.push("");
             }
-          } else {
-            chartData.datasets[i].data.push(0);
           }
-        });
+        } else {
+          if ($('#input-norm').prop('checked')) {
+            chartData.datasets[i].data = data.cluster.temporal;
+          } else {
+            chartData.datasets[i].data = data.value.temporalArr;
+          }
+          if (!chartData.labels.length) {
+            for (var j = 1; j <= data.value.temporalArr.length; j++) {
+              chartData.labels.push("");
+            }
+          }
+        }
         count++;
         if (count == hashtags.length) {
           plot(chartData);
@@ -65,18 +69,12 @@ function plot(cData) {
   ctx = canvas.getContext('2d');
   chart = new Chart(ctx).Line(cData, {
     bezierCurve: true,
-    scaleBeginAtZero : true
+    scaleBeginAtZero : true,
+    pointDot: false,
+    scaleShowGridLines : false,
+    scaleShowHorizontalLines: false,
+    scaleShowVerticalLines: false,
   });
-}
-
-function getDates(startDate, stopDate) {
-    var dateArray = [];
-    var currentDate = startDate;
-    while (currentDate <= stopDate) {
-        dateArray.push(moment(currentDate).format('D MMM YYYY'));
-        currentDate = moment(currentDate).add(1, 'days');
-    }
-    return dateArray;
 }
 
 var canvas;
