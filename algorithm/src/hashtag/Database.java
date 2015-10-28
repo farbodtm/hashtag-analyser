@@ -16,11 +16,15 @@ import java.util.List;
 import java.util.Map;
 
 public class Database {
+    private String collection;
+    public Database(String name) {
+        collection = name;
+    }
     public List<Hashtag> getHashtags(int limit) {
         MongoClient mongo = new MongoClient("localhost", 27017);
         DB db = mongo.getDB("hashtag");
 
-        DBCollection hashtagCollection = db.getCollection("hashtags");
+        DBCollection hashtagCollection = db.getCollection(collection);
         DBCursor cursor;
         if (limit == 0) {
             cursor = hashtagCollection.find();
@@ -47,7 +51,7 @@ public class Database {
     public boolean saveHashtags(List<Hashtag> hashtags, List<Hashtag> clusters, String numHashtags, String numClusters) {
         MongoClient mongo = new MongoClient("localhost", 27017);
         DB db = mongo.getDB("hashtag");
-        DBCollection hashtagCollection = db.getCollection("hashtags_clustered_" + numHashtags + "_" + numClusters);
+        DBCollection hashtagCollection = db.getCollection(collection + "_clustered_" + numHashtags + "_" + numClusters);
         hashtagCollection.remove(new BasicDBObject());
         for (Hashtag hashtag : hashtags) {
             BasicDBObject doc = new BasicDBObject("text", hashtag.text)
@@ -56,7 +60,7 @@ public class Database {
             hashtagCollection.insert(doc);
         }
 
-        DBCollection clusterCollection = db.getCollection("clusters_" + numHashtags + "_" + numClusters);
+        DBCollection clusterCollection = db.getCollection(collection + "_clusters_" + numHashtags + "_" + numClusters);
         clusterCollection.remove(new BasicDBObject());
         for (int i = 0; i < clusters.size(); i++) {
             BasicDBObject doc = new BasicDBObject("index", i)

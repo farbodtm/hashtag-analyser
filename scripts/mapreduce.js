@@ -96,7 +96,7 @@ var finalize = function(key, value) {
   return hashtag;
 };
 
-var range = moment.range(new Date('00:00 19 Aug 2015'), new Date('00:00 9 Sep 2015'));
+var range = moment.range(new Date('00:00 19 Aug 2015'), new Date('00:00 26 Oct 2015'));
 var hours = [];
 
 range.by('hours', function(moment) {

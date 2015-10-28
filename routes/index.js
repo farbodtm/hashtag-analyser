@@ -9,8 +9,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Hashtag'});
 });
 
-router.get('/cluster/:hashtags/:clusters', function(req, res, next) {
-  res.render('cluster', { title: 'Clustering', hashtags: req.params.hashtags, clusters: req.params.clusters});
+router.get('/cluster/:collection/:hashtags/:clusters/', function(req, res, next) {
+  res.render('cluster', { title: 'Clustering', show: req.query.show, hashtags: req.params.hashtags, clusters: req.params.clusters, collection: req.params.collection });
 });
 
 // stat json
@@ -34,12 +34,13 @@ router.get('/hashtags', function(req, res, next) {
   });
 });
 
-router.get('/cluster/json/:hashtags/:clusters', function(req, res, next) {
+router.get('/cluster/json/:collection/:hashtags/:clusters', function(req, res, next) {
   var hts = req.params.hashtags;
   var cl = req.params.clusters;
-  db.collection('hashtags_clustered_' + hts + '_' + cl).find().toArray(function(err, hashtags) {
+  var collection = req.params.collection;
+  db.collection(collection + '_clustered_' + hts + '_' + cl).find().toArray(function(err, hashtags) {
     if (hashtags) {
-      db.collection('clusters_' + hts + '_' + cl).find().toArray(function(err, clusters) {
+      db.collection(collection + '_clusters_' + hts + '_' + cl).find().toArray(function(err, clusters) {
         if (clusters) {
           c = {};
           clusters.forEach(function(el) {

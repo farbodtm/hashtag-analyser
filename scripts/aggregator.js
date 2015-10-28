@@ -43,32 +43,32 @@ var finish = function(hashtags) {
       var temporalArrFull = [];
       var temporalObj = getTemporalObj(start, end);
       for (var date in h.temporal) {
-	temporalArr.push(h.temporal[date]);
+        temporalArr.push(h.temporal[date]);
       }
       for (date in temporalObj) {
-	if (h.temporal[date]) {
-	  temporalArrFull.push(h.temporal[date]);
-	} else {
-	  temporalArrFull.push(0);
-	}
+        if (h.temporal[date]) {
+          temporalArrFull.push(h.temporal[date]);
+        } else {
+          temporalArrFull.push(0);
+        }
       }
       var aas = 0;
       var peaks = 0;
       var mean = 0;
       var variance = 0;
       for (var i = 0; i < temporalArrFull.length; i++) {
-	mean += temporalArrFull[i];
+        mean += temporalArrFull[i];
       }
       mean /= temporalArrFull.length;
       for (i = 0; i < temporalArrFull.length; i++) {
-	variance = Math.pow(temporalArrFull[i] - mean, 2);
+        variance = Math.pow(temporalArrFull[i] - mean, 2);
       }
       variance /= temporalArrFull.length-1;
       for (i = 1; i < temporalArr.length-1; i++) {
-	aas += Math.abs(temporalArr[i] - temporalArr[i-1]);
-	if (temporalArr[i] - temporalArr[i-1] > 0 && temporalArr[i] - temporalArr[i+1] > 0) {
-	  peaks++;
-	}
+        aas += Math.abs(temporalArr[i] - temporalArr[i-1]);
+        if (temporalArr[i] - temporalArr[i-1] > 0 && temporalArr[i] - temporalArr[i+1] > 0) {
+          peaks++;
+        }
       }
       aas /= temporalArr.length-1;
 
@@ -95,11 +95,11 @@ var finish = function(hashtags) {
   ht.remove({}, function(err, result) {
     hts.forEach(function(hashtag) {
       ht.insert(hashtag, function(err, result) {
-	counter--;
-	if (counter === 0) {
-	  console.log(chalk.green('Done'));
-	  process.exit(0);
-	}
+        counter--;
+        if (counter === 0) {
+          console.log(chalk.green('Done'));
+          process.exit(0);
+        }
       });
     });
   });
@@ -122,26 +122,26 @@ tweets.count(function(err, count) {
     tweets.find({},{ hashtags: 1, created_at: 1}).skip(i).limit(perRequest).toArray(function(err, result) {
       bar.tick(perRequest);
       result.forEach(function(tweet) {
-	// set the date
-	date = new Date(tweet.created_at);
-	date = moment(date).format('D MMM YYYY');
-	// counting each hastag of a tweet
-	tweet.hashtags.forEach(function(hashtag) {
-	  hashtag = hashtag.toLowerCase();
-	  hashtags[hashtag] = hashtags[hashtag] || {};
-	  hashtags[hashtag][date] = hashtags[hashtag][date] || 0;
-	  hashtags[hashtag].total = hashtags[hashtag].total || 0;
-	  hashtags[hashtag][date]++;
-	  hashtags[hashtag].total++;
-	});
+        // set the date
+        date = new Date(tweet.created_at);
+        date = moment(date).format('D MMM YYYY');
+        // counting each hastag of a tweet
+        tweet.hashtags.forEach(function(hashtag) {
+          hashtag = hashtag.toLowerCase();
+          hashtags[hashtag] = hashtags[hashtag] || {};
+          hashtags[hashtag][date] = hashtags[hashtag][date] || 0;
+          hashtags[hashtag].total = hashtags[hashtag].total || 0;
+          hashtags[hashtag][date]++;
+          hashtags[hashtag].total++;
+        });
       });
 
       result = null;
       if (i > count) {
-	console.log(chalk.yellow('Saving...'));
-	finish(hashtags);
+        console.log(chalk.yellow('Saving...'));
+        finish(hashtags);
       } else {
-	countIt(i + perRequest);
+        countIt(i + perRequest);
       }
     });
   };

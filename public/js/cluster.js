@@ -1,6 +1,11 @@
+
 if (page =='cluster') {
+
   $(function () {
-    $.getJSON('/cluster/json/' + hts + '/' + cl).then(function(data) {
+
+    $.getJSON('/cluster/json/' + collection + '/' + hts + '/' + cl).then(function(data) {
+
+    console.log(collection);
       for (var cluster in data) {
         var temporal = data[cluster].temporal;
         chartData.datasets[0].data = [];
@@ -27,11 +32,13 @@ if (page =='cluster') {
     var words = $('<div class="words"></div>');
     var text = '<h4> Cluster ' + (parseInt(i)+1) + '</h4>';
     text += '<h4>Number of hashtags: ' + hashtags.length + '</h4>';
-    for (var i = 0; i < hashtags.length; i++) {
-      if (/^[A-Za-z0-9]*$/.test(hashtags[i])) {
-        text += "#" + hashtags[i];
-        if (i != hashtags.length-1) {
-          text += " - ";
+    if (showHashtag == '1') {
+      for (var i = 0; i < hashtags.length; i++) {
+        if (/^[A-Za-z0-9]*$/.test(hashtags[i])) {
+          text += "#" + hashtags[i];
+          if (i != hashtags.length-1) {
+            text += " - ";
+          }
         }
       }
     }
