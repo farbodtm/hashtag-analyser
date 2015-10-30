@@ -17,9 +17,11 @@ import java.util.Map;
 
 public class Database {
     private String collection;
+
     public Database(String name) {
         collection = name;
     }
+
     public List<Hashtag> getHashtags(int limit) {
         MongoClient mongo = new MongoClient("localhost", 27017);
         DB db = mongo.getDB("hashtag");
@@ -48,6 +50,7 @@ public class Database {
         mongo.close();
         return hashtags;
     }
+
     public boolean saveHashtags(List<Hashtag> hashtags, List<Hashtag> clusters, String numHashtags, String numClusters) {
         MongoClient mongo = new MongoClient("localhost", 27017);
         DB db = mongo.getDB("hashtag");

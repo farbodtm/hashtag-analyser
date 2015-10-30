@@ -4,33 +4,51 @@ import org.apache.commons.math3.linear.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Implementation of KSC-Clustering algorithm
+ * https://cs.stanford.edu/people/jure/pubs/memeshapes-wsdm11.pdf
+ *
+ */
 public class KSCClustering {
     public List<Hashtag> hashtags;
     public List<Hashtag> centroids;
 
     public KSCClustering(List<Hashtag> hts) {
+        // Set self.hashtags
         hashtags = new ArrayList<>(hts);
     }
 
+    /**
+     * Run KSC on the given hashtag
+     *
+     * @param numCluster
+     * @param numIteration
+     */
     public void run(int numCluster, int numIteration) {
+        // Initialize self.centroids
         createClusters(numCluster);
-        // assign each hashtag to a random cluster
+
+        // Assign each hashtag to a random cluster
         for (Hashtag hashtag : hashtags) {
             hashtag.cluster = ThreadLocalRandom.current().nextInt(0, numCluster);
         }
+
         List<Integer> mem = new ArrayList<>();
         for (Hashtag hashtag : hashtags) {
             mem.add(hashtag.cluster);
         }
 
         for(int i = 0; i < numIteration; i++) {
+
             System.out.print("Iteration: ");
             System.out.println(i);
-            // Refinement
+
+            // Refinement; Compute the centroid of each hashtag
             for (int j = 0; j < centroids.size(); j++) {
                 computeCentral(j);
             }
-            // Assignment
+
+            // Assignment; Assign each hashtag to the closet cluster
             for (Hashtag hashtag : hashtags) {
                 int minCluster = 0;
                 double minDist = computeDistance(centroids.get(0), hashtag).value;
@@ -42,21 +60,31 @@ public class KSCClustering {
                         minCluster = j;
                     }
                 }
+
                 hashtag.cluster = minCluster;
             }
 
+            // Update the cluster array
             List<Integer> new_mem = new ArrayList<>();
             for (Hashtag hashtag : hashtags) {
                 new_mem.add(hashtag.cluster);
             }
+
+            // If old_cluster = new_cluster break;
             if (mem.equals(new_mem)) {
                 System.out.println(i);
                 break;
             }
+
         }
     }
 
-    public void computeCentral(int k) {
+    /**
+     * Find the centroid of k-th cluster and update it
+     *
+     * @param k
+     */
+    private void computeCentral(int k) {
         Hashtag currentCenter = centroids.get(k);
         List<List<Double>> cluster = new ArrayList<>();
 
@@ -77,7 +105,7 @@ public class KSCClustering {
             centroids.set(k, currentCenter);
         }
 
-        // calculate x/norm(x)
+        // Calculate x/norm(x)
         for (int i = 0; i < cluster.size(); i++) {
             List<Double> a = cluster.get(i);
             double norm = 0;
@@ -89,7 +117,8 @@ public class KSCClustering {
                 a.set(j, a.get(j)/norm);
             }
         }
-        // create a matrix of with all the hashtags
+
+        // Create a matrix of all normalized temporal data as its rows
         double[][] matrixData = new double[cluster.size()][];
         for (int i = 0; i < cluster.size(); i++) {
             matrixData[i] = listToArray(cluster.get(i));
@@ -97,11 +126,15 @@ public class KSCClustering {
         int temporalLength = cluster.get(0).size();
 
         RealMatrix b = MatrixUtils.createRealMatrix(matrixData);
+
+        // Calculate M (refer to paper)
         RealMatrix M = b.transpose().multiply(b).subtract(MatrixUtils.createRealIdentityMatrix(temporalLength).scalarMultiply(cluster.size()));
 
+        // Calculate the smallest eigenvector of M
         EigenDecomposition eig = new EigenDecomposition(M);
         RealVector newCentroid = eig.getEigenvector(0);
 
+        // centroid = abs(centroid)
         double[] c = newCentroid.toArray();
         double sum = 0;
         for(double i : c) {
@@ -111,6 +144,7 @@ public class KSCClustering {
             newCentroid = newCentroid.mapMultiply(-1);
         }
 
+        // Update the centroid of the cluster
         double[] centroid = newCentroid.toArray();
         List<Double> newCentroidList = new ArrayList<>();
         for (int i = 0; i < temporalLength; i++) {
@@ -118,8 +152,14 @@ public class KSCClustering {
         }
         currentCenter.temporal = newCentroidList;
         centroids.set(k, currentCenter);
+
     }
 
+    /**
+     * Initialize a hashtag class for each cluster
+     *
+     * @param n
+     */
     private void createClusters(int n) {
         List<Hashtag> arr = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -131,6 +171,12 @@ public class KSCClustering {
         centroids = arr;
     }
 
+    /**
+     * Sum the elements of given array
+     *
+     * @param arr
+     * @return sum
+     */
     private double sum(List<Double> arr) {
         double re = 0d;
         for (double i : arr) {
@@ -139,12 +185,23 @@ public class KSCClustering {
         return re;
     }
 
+    /**
+     * Find the optimal q (shift) for 2 hashtag and return the distance between a and b
+     *
+     *
+     * @param a
+     * @param b
+     * @return distance and shifted b
+     */
     private Distance computeDistance(Hashtag a, Hashtag b) {
         List<Double> x = a.temporal;
         List<Double> y = b.temporal;
+
         double minDistance = getDistance(listToArray(x), listToArray(y));
         List<Double> optimalY = y;
         int length = x.size();
+
+        // Find the optimal q
         for(int shift = -5; shift <= 5; shift++) {
             List<Double> newY = new ArrayList<>();
             if (shift < 0) {
@@ -168,6 +225,8 @@ public class KSCClustering {
                 optimalY = newY;
             }
         }
+
+        // Return the shifted temporal data (need it for finding the centroid)
         Distance distance = new Distance();
         distance.value = minDistance;
         distance.shiftedTemporal = optimalY;
@@ -175,6 +234,13 @@ public class KSCClustering {
         return distance;
     }
 
+    /**
+     * Calculate the distance between two time-series data (measure the similarity of two time series)
+     *
+     * @param x
+     * @param y
+     * @return distance
+     */
     private double getDistance(double[] x, double[] y) {
         RealVector vectorX = new ArrayRealVector(x);
         RealVector vectorY = new ArrayRealVector(y);
@@ -184,6 +250,12 @@ public class KSCClustering {
         return vectorX.subtract(vectorY.mapMultiply(alpha)).getNorm() / vectorX.getNorm();
     }
 
+    /**
+     * Convert a list of double to array of primitive doubles
+     *
+     * @param list
+     * @return array
+     */
     private double[] listToArray(List<Double> doubles) {
         double[] target = new double[doubles.size()];
         for (int i = 0; i < target.length; i++) {
