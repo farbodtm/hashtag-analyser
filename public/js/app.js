@@ -27,7 +27,11 @@ $('#form-hashtag').submit(function(e) {
           chartData.datasets[i].data = data.value.fullTemporalArr;
           if (!chartData.labels.length) {
             for (var j = 1; j <= data.value.fullTemporalArr.length; j++) {
-              chartData.labels.push("");
+              if (j % 50 == 0) {
+                chartData.labels.push(j);
+              } else {
+                chartData.labels.push("");
+              }
             }
           }
         } else {
@@ -38,7 +42,11 @@ $('#form-hashtag').submit(function(e) {
           }
           if (!chartData.labels.length) {
             for (var j = 1; j <= data.value.temporalArr.length; j++) {
-              chartData.labels.push("");
+              if ((j-2) % 20== 0) {
+                chartData.labels.push(j-42);
+              } else {
+                chartData.labels.push("");
+              }
             }
           }
         }

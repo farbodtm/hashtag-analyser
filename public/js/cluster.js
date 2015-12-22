@@ -11,7 +11,11 @@ if (page =='cluster') {
         chartData.datasets[0].data = [];
         chartData.labels = [];
         for (var i = 0; i < temporal.length; i++) {
-          chartData.labels.push(i);
+          if (i% 10== 0) {
+            chartData.labels.push(i);
+          } else {
+            chartData.labels.push("");
+          }
           chartData.datasets[0].data.push(temporal[i]);
         }
         plotIt(chartData, data[cluster].hashtags, cluster);

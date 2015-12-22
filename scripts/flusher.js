@@ -3,7 +3,7 @@ var moment = require('moment');
 var progress = require('progress');
 var chalk = require('chalk');
 
-var db = require('mongoskin').db('mongodb://root@localhost:27017/hashtag');
+var db = require('mongoskin').db('mongodb://root@localhost:27018/hashtag');
 var ht5 = db.collection('hashtags_5d');
 var ht = db.collection('hashtags');
 
